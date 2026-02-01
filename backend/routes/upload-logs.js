@@ -3,14 +3,18 @@ var router = express.Router();
 const pgp = require('pg-promise')();
 
 const db = require('../db')
+const supabase = require('../db/supabase');
 
 router.route('/').all((req, res, next) => {
   next()
 })
 .get(async function (req, res, next) {
   try {
-    const logs = await db.any('SELECT * FROM logs');
-    res.json(logs);
+    const { data, error } = await supabase
+      .from('logs')
+      .select()
+    console.log(error)
+    res.json(data);
   } catch (error) {
     console.error('ERROR:', error);
     res.status(500).json({ error: 'Database error' });
