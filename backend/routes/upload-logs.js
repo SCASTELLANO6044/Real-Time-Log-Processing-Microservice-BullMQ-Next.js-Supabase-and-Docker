@@ -24,11 +24,16 @@ router.route('/').all((req, res, next) => {
   })
   .post(async function (req, res, next) {
     try {
+      const payloadSize = JSON.stringify(req.body.payload).length;
+      const priority = payloadSize < 1000 ? 1 : 10; // Simple heuristic: < 1KB = High Priority
+
       const job = await logQueue.add('upload-log', {
         timestamp: req.body.timestamp,
         level: req.body.level,
         message: req.body.message,
         payload: req.body.payload
+      }, {
+        priority, // Lower number = Higher priority
       });
       console.log(`Job added to queue with id: ${job.id}`);
       res.sendStatus(200);

@@ -2,8 +2,8 @@ const { Queue } = require('bullmq');
 const connection = require('./connection');
 
 const logQueue = new Queue('log-queue',
-    { connection },
     {
+        connection,
         defaultJobOptions: {
             attempts: 3,
             backoff: {
